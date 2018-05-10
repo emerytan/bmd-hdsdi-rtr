@@ -6,20 +6,18 @@ const path = require('path')
 const fs = require('fs')
 const EventEmitter = require('events').EventEmitter
 const spawn = require('child_process').spawn
-const rl = require('readline')
+// const rl = require('readline')
 const io = require('socket.io')(server)
 const sources = require('./bin/objectifySources')
 const destinations = require('./bin/objectifyDestinations')
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = '10.0.99.50'
-let bmdRouter
+var bmdRouter
 var connections = []
 var remaining
 var ioReg = /^[0-9]{1,2}\s[0-9]{1,2}/gm
 var isOnline = undefined
-var RE_SUCCESS = /bytes from/i
-var INTERVAL = 2 // in seconds
 
 
 app.use(express.static(__dirname + '/'));

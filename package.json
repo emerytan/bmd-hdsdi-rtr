@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emerytan/testMore.git"
+    "url": "git+https://github.com/emerytan/bmd-hdsdi-rtr.git"
   },
   "author": "Emery Anderson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/emerytan/testMore/issues"
+    "url": "https://github.com/emerytan/bmd-hdsdi-rtr/issues"
   },
-  "homepage": "https://github.com/emerytan/testMore#readme",
+  "homepage": "https://github.com/emerytan/bmd-hdsdi-rtr#readme",
   "devDependencies": {
     "rollup": "^0.58.2",
     "rollup-plugin-commonjs": "^9.1.3",
