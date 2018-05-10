@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../src/styles/custom.css">
+    <title>Video Router</title>
+</head>
+
+<body class="container-fluid">
+    <header class="container">
+        <div id="headerContainer" class="row justify-content-md-center">
+            <h1 id="headerText">BMD Router control</h1>
+        </div>
+    </header>
+    <div id="main">
+        <div id="mainContainer" class="row">
+            <div id="routerContainter" class="col-12"></div>
+        </div>
+    </div>
+    <footer>
+        <div id="footerContainer" class="row">
+            <div id="footerLeft" class="col">
+                <p id="ioState"></p>
+            </div>
+            <div id="footerMiddle" class="col">
+                <p id="routerState"></p>
+            </div>
+            <div id="footerRight" class="col">
+                <p id="appMessages"></p>
+            </div>
+        </div>
+    </footer>
+    <script src="bundle.js"></script>
+</body>
+
+</html>

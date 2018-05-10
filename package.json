@@ -1,0 +1,36 @@
+{
+  "name": "gc-rtr",
+  "version": "1.0.0",
+  "description": "Blackmagic Router controller",
+  "main": "server.js",
+  "bin": {
+    "gc-rtr": "bmdRouter.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emerytan/testMore.git"
+  },
+  "author": "Emery Anderson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emerytan/testMore/issues"
+  },
+  "homepage": "https://github.com/emerytan/testMore#readme",
+  "devDependencies": {
+    "rollup": "^0.58.2",
+    "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-node-resolve": "^3.3.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0"
+  }
+}

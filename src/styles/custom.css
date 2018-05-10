@@ -1,0 +1,44 @@
+html {
+    background-color: rgb(16, 16, 16);
+}
+
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: rgb(56, 56, 56);
+    color: rgb(156, 156, 156)
+}
+
+p {
+    margin-bottom: 0
+}
+
+h1 {
+    font-size: 2em;
+    padding-top: 8px
+}
+
+#main {
+    border: 1px solid #808080;
+    border-radius: 10px
+}
+
+#footerContainer {
+    padding: 5px
+}
+
+table,
+select,
+option {
+    background-color: rgb(32, 32, 32);
+    color: #ccc
+}
+
+th {
+    font-weight: normal;
+    color: orange;
+    font-size: 1.4em
+}
+
+td {
+    text-indent: 5px
+}
