@@ -6,7 +6,6 @@ const path = require('path')
 const fs = require('fs')
 const EventEmitter = require('events').EventEmitter
 const spawn = require('child_process').spawn
-// const rl = require('readline')
 const io = require('socket.io')(server)
 const sources = require('./bin/objectifySources')
 const destinations = require('./bin/objectifyDestinations')
@@ -25,11 +24,9 @@ app.use(express.static(__dirname + '/build'));
 app.use(express.static(__dirname + '/src'));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'))
 
-
 server.listen(3000, (err) => {
     console.log('BMD router webApp listening on port 3000')
 })
-
 
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html')
@@ -83,6 +80,12 @@ function routerInit() {
         console.log('connected to router...')
     })
 
+    bmdRouter.on('connect', () => {
+        isOnline = true
+        io.emit('bmdRouter state', {
+            state: isOnline
+        })
+    })
 
     bmdRouter.on('data', (data) => {
         remaining += data;
@@ -94,14 +97,6 @@ function routerInit() {
             index = remaining.indexOf('\n');
         }
         remaining = ''
-    })
-
-
-    bmdRouter.on('connect', () => {
-        isOnline = true
-        io.emit('bmdRouter state', {
-            state: isOnline
-        })
     })
 
 

@@ -1,11 +1,29 @@
 html {
     background-color: rgb(16, 16, 16);
+    height: 100%;
+    width: 100%
 }
 
 body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: rgb(56, 56, 56);
-    color: rgb(156, 156, 156)
+    color: rgb(156, 156, 156);
+    height: 100%;
+    width: 100%  
+}
+
+#main {
+    height: 88%;
+    border: 1px solid #808080;
+    border-radius: 10px;
+    background-color: rgb(32, 32, 32);
+    overflow-y: auto;
+    overflow-x: hidden
+}
+
+header,
+footer {
+    height: 5%;
 }
 
 p {
@@ -17,19 +35,10 @@ h1 {
     padding-top: 8px
 }
 
-#main {
-    border: 1px solid #808080;
-    border-radius: 10px
-}
-
-#footerContainer {
-    padding: 5px
-}
-
 table,
 select,
 option {
-    background-color: rgb(32, 32, 32);
+    background-color: rgb(8, 32, 32);
     color: #ccc
 }
 
@@ -41,4 +50,23 @@ th {
 
 td {
     text-indent: 5px
+}
+
+#footerContainer {
+    position: relative;
+    height: 100%;
+    width: auto;
+    padding: 15px 0
+}
+
+#footerLeft {
+    text-align: left;
+}
+
+#footerMiddle {
+    text-align: center;
+}
+
+#footerRight {
+    text-align: right
 }
