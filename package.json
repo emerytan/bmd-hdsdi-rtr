@@ -9,6 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "watch": "rollup -c --watch",
     "build": "mkdir -p build && rollup -c"
   },
   "repository": {

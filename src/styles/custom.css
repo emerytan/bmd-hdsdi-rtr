@@ -32,13 +32,13 @@ p {
 
 h1 {
     font-size: 2em;
-    padding-top: 8px
+    padding: 5px 0
 }
 
 table,
 select,
 option {
-    background-color: rgb(8, 32, 32);
+    background-color: rgb(8, 40, 40);
     color: #ccc
 }
 

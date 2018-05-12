@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	socket.on('bmdRouter state', (msg) => {
 		if (msg === true) {
-			routerState.innerText = 'Router Online'
+			routerState.innerText = 'Router online'
 			routerState.style.color = 'green'
 		} else {
-			routerState.innerText = 'Router Offline'
+			routerState.innerText = 'Router offline'
 			routerState.style.color = 'red'
 		}
 	})
