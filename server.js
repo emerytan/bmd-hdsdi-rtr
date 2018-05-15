@@ -3,8 +3,8 @@ const app = express()
 const server = require('http').Server(app)
 const net = require('net')
 const io = require('socket.io')(server)
-const sources = require('./bin/objectifySources')
-const destinations = require('./bin/objectifyDestinations')
+// const sources = require('./bin/objectifySources')
+// const destinations = require('./bin/objectifyDestinations')
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
@@ -12,6 +12,9 @@ var bmdRouter
 var connections = []
 var remaining
 var isOnline = undefined
+var lastRequest
+var sources = {}
+var destinations = {}
 
 app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
@@ -81,6 +84,13 @@ function routerInit() {
 		io.emit('bmdRouter state', {
 			state: isOnline
 		})
+		setTimeout(() => {
+			getInputLabels()
+		}, 3000)
+		setTimeout(() => {
+			console.log(sources)
+		}, 8000)
+
 	})
 
 	bmdRouter.on('data', (data) => {
@@ -128,14 +138,36 @@ function routerInit() {
 
 
 function parseData(data) {
-	var ioReg = /^[0-9]{1,2}\s[0-9]{1,2}$/g
-	if (ioReg.test(routerText.write(data))) {
-		var thisMatchinfo = data
-		var arr = thisMatchinfo.split(' ')
-		io.emit('router change', {
-			source: arr[1],
-			destination: arr[0]
-		})
+	// console.log(data);
+	// var arr = []
+	var labelReg = /(^[0-9]{1,2})\s(.{3,})/
+	var ioReg = /^[0-9]{1,2}\s[0-9]{1,2}$/
+	// if (ioReg.test(routerText.write(data))) {
+	// 	var thisMatchinfo = data
+	// 	arr = thisMatchinfo.split(' ')
+	// 	console.log(arr);
+	// io.emit('router change', {
+	// 	source: arr[1],
+	// 	destination: arr[0]
+	// })
+	// }
+
+	var thisMatchinfo = routerText.write(data)
+	var found = thisMatchinfo.match(labelReg)
+	if (found !== null && lastRequest === 'getInputLabels') {
+		console.log(`label: ${found[2]} input: ${found[1]}`)
+		sources[found[1]] = found[2]
 	}
+	// var thisMatchinfo = data
+	// arr = thisMatchinfo.split(' ')
+	// console.log(arr);
+
 }
 
+
+function getInputLabels() {
+	lastRequest = 'getInputLabels'
+	console.log(lastRequest)
+	bmdRouter.write(Buffer.from('INPUT LABELS:\n'))
+	bmdRouter.write(Buffer.from('\n'))
+}

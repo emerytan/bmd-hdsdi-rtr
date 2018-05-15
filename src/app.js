@@ -5,7 +5,6 @@ import io from 'socket.io-client'
 var socket = io.connect()
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
 
 	var sourceArr = []
@@ -15,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var routerState = document.getElementById('routerState')
 	var appMessages = document.getElementById('appMessages')
-
 	appMessages.innerText = 'page fully loaded'
 	appMessages.style.color = 'green'
 	generate_table()
+
 
 	// sockets
 	socket.on('connect', () => {
@@ -105,16 +104,3 @@ function generate_table() {
 	body.appendChild(tbl)
 }
 
-
-// tbl.id = 'routerTable'
-// tbl.classList.add('table')
-// var headerRow = document.createElement('tr')
-// var tableHeader1 = document.createElement('th')
-// var tableHeader2 = document.createElement('th')
-// tableHeader1.id = 'thead1'
-// tableHeader2.id = 'thead2'
-// tableHeader1.innerText = 'Sources'
-// tableHeader2.innerText = 'Destinations'
-// headerRow.appendChild(tableHeader1)
-// headerRow.appendChild(tableHeader2)
-// tbl.appendChild(headerRow)
