@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 	socket.on('disconnect', () => {
-		console.log('socket io disconnect')
 		$('#ioState').text('Web server is down... call Barbary').css('color', 'red')
 	})
 
@@ -43,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		} else {
 			routerState.innerText = 'Router offline'
 			routerState.style.color = 'red'
+			$('#routerContainer').fadeTo(1000, .25)
 		}
 	})
 
@@ -82,20 +82,8 @@ function initSelectors() {
 }
 
 function generate_table() {
-	var body = document.getElementById('routerContainer') 
-	var tbl = document.createElement('table')
-	tbl.id = 'routerTable'
-	tbl.classList.add('table')
-	var headerRow = document.createElement('tr')
-	var tableHeader1 = document.createElement('th')
-	var tableHeader2 = document.createElement('th')
-	tableHeader1.id = 'thead1'
-	tableHeader2.id = 'thead2'
-	tableHeader1.innerText = 'Sources'
-	tableHeader2.innerText = 'Destinations'
-	headerRow.appendChild(tableHeader1)
-	headerRow.appendChild(tableHeader2)
-	tbl.appendChild(headerRow)
+	var body = document.getElementById('routerTable') 
+	var tbl = document.getElementById('routerBody')
 	for (var key in sources) {
 		const row = document.createElement('tr')
 		row.id = `routerIO${key}`
@@ -116,3 +104,17 @@ function generate_table() {
 	}
 	body.appendChild(tbl)
 }
+
+
+// tbl.id = 'routerTable'
+// tbl.classList.add('table')
+// var headerRow = document.createElement('tr')
+// var tableHeader1 = document.createElement('th')
+// var tableHeader2 = document.createElement('th')
+// tableHeader1.id = 'thead1'
+// tableHeader2.id = 'thead2'
+// tableHeader1.innerText = 'Sources'
+// tableHeader2.innerText = 'Destinations'
+// headerRow.appendChild(tableHeader1)
+// headerRow.appendChild(tableHeader2)
+// tbl.appendChild(headerRow)

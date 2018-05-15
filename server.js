@@ -7,12 +7,11 @@ const sources = require('./bin/objectifySources')
 const destinations = require('./bin/objectifyDestinations')
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
-const ipaddr = '10.0.99.50'
+const ipaddr = process.argv[2] || '10.0.99.50'
 var bmdRouter
 var connections = []
 var remaining
 var isOnline = undefined
-
 
 app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
