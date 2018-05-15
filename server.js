@@ -52,7 +52,6 @@ io.on('connection', (socket) => {
 
 	if (isOnline) {
 		console.log('requesting io table')
-		bmdRouter.write(Buffer.from('VIDEO OUTPUT ROUTING:\n\n'))
 	}
 
 
@@ -138,10 +137,9 @@ function routerInit() {
 
 
 function parseData(data) {
-	// console.log(data);
-	// var arr = []
+	var arr = []
 	var labelReg = /(^[0-9]{1,2})\s(.{3,})/
-	var ioReg = /^[0-9]{1,2}\s[0-9]{1,2}$/
+	var ioReg = /(^[0-9]{1,2})\s([0-9]{1,2})/
 	// if (ioReg.test(routerText.write(data))) {
 	// 	var thisMatchinfo = data
 	// 	arr = thisMatchinfo.split(' ')
@@ -152,15 +150,29 @@ function parseData(data) {
 	// })
 	// }
 
-	var thisMatchinfo = routerText.write(data)
-	var found = thisMatchinfo.match(labelReg)
-	if (found !== null && lastRequest === 'getInputLabels') {
-		console.log(`label: ${found[2]} input: ${found[1]}`)
-		sources[found[1]] = found[2]
-	}
+	
 	// var thisMatchinfo = data
 	// arr = thisMatchinfo.split(' ')
 	// console.log(arr);
+
+
+	var thisMatchinfo = routerText.write(data)
+	var found = thisMatchinfo.match(labelReg)
+	var currentRoutes = thisMatchinfo.match(ioReg)
+
+	if (lastRequest === 'getInputLabels' && found !== null) {
+		console.log(`label: ${found[2]} input: ${found[1]}`)
+		sources[found[1]] = found[2]
+	}
+
+	if (lastRequest === 'getOutputLabels' && found !== null) {
+		console.log(`label: ${found[2]} output: ${found[1]}`)
+		destinations[found[1]] = found[2]
+	}
+
+	if (lastRequest === 'ioTable' && currentRoutes !== null) {
+
+	}
 
 }
 
@@ -170,4 +182,16 @@ function getInputLabels() {
 	console.log(lastRequest)
 	bmdRouter.write(Buffer.from('INPUT LABELS:\n'))
 	bmdRouter.write(Buffer.from('\n'))
+}
+
+function getOutputLabels() {
+	lastRequest = 'getOutputLabels'
+	console.log(lastRequest)
+	bmdRouter.write(Buffer.from('OUTPUT LABELS:\n'))
+	bmdRouter.write(Buffer.from('\n'))
+}
+
+function ioTable() {
+	lastRequest = 'ioTable'
+	bmdRouter.write(Buffer.from('VIDEO OUTPUT ROUTING:\n\n'))
 }
