@@ -13,17 +13,49 @@ body {
 }
 
 #main {
-    height: 88%;
+    position: relative;
+    height: 80%;
     border: 1px solid #808080;
     border-radius: 10px;
-    background-color: rgb(32, 32, 32);
-    overflow-y: auto;
-    overflow-x: hidden
+    background-color: rgb(32, 32, 32)
+}
+
+#mainContainer {
+    position: relative;
+    height: 100%;
+}
+
+#sideCont {
+    border: 1px solid #808080;
+    border-radius: 10px;
+}
+
+#routerContainer {
+    border: 1px solid #808080;
+    border-radius: 10px
+}
+
+.table-scroll tbody {
+    position: absolute;
+    overflow-y: scroll;
+    height: 440px;
+    border: 1px solid #808080;
+    border-radius: 6px
+}
+
+.table-scroll tr {
+    width: 100%;
+    table-layout: fixed;
+    display: inline-table;
+}
+
+.table-scroll thead>tr>th {
+    border: none;
 }
 
 header,
 footer {
-    height: 5%;
+    height: 8%;
 }
 
 p {
@@ -31,26 +63,8 @@ p {
 }
 
 h1 {
-    font-size: 2em;
     padding: 5px 0
-}
-
-table,
-select,
-option {
-    background-color: rgb(8, 40, 40);
-    color: #ccc
-}
-
-th {
-    font-weight: normal;
-    color: orange;
-    font-size: 1.4em
-}
-
-td {
-    text-indent: 5px
-}
+} 
 
 #footerContainer {
     position: relative;

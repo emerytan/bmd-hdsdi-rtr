@@ -5,6 +5,13 @@ import io from 'socket.io-client'
 var socket = io.connect()
 
 
+var routerState = document.getElementById('routerState')
+var appMessages = document.getElementById('appMessages')
+var routerContainer = document.getElementById('routerContainer')
+var th = document.getElementById('thead1')
+var routerBody = document.getElementById('routerBody')
+
+
 document.addEventListener('DOMContentLoaded', function () {
 
 	var sourceArr = []
@@ -12,8 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		sourceArr[ind] = sources[ind]
 	}
 
-	var routerState = document.getElementById('routerState')
-	var appMessages = document.getElementById('appMessages')
+	window.addEventListener('load', setTableSize, false)
+	window.addEventListener('resize', setTableSize, false)
+
 	appMessages.innerText = 'page fully loaded'
 	appMessages.style.color = 'green'
 	generate_table()
@@ -65,6 +73,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
+function setTableSize() {
+	let tableBodyHeight = routerContainer.offsetHeight - th.offsetHeight - 2
+	routerBody.style.height = `${tableBodyHeight}px`
+}
+
 
 
 function initSelectors() {
@@ -102,5 +115,6 @@ function generate_table() {
 		tbl.appendChild(row)
 	}
 	body.appendChild(tbl)
+	
 }
 
