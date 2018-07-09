@@ -3,16 +3,14 @@ const app = express()
 const server = require('http').Server(app)
 const net = require('net')
 const io = require('socket.io')(server)
-// const sources = require('./bin/objectifySources')
-// const destinations = require('./bin/objectifyDestinations')
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
-var bmdRouter
+var bmdRouter = require('./testStuff')
 var connections = []
 var remaining
 var isOnline = undefined
-var lastRequest
+var lastRequest = 'getOutputLabels'
 var sources = {}
 var destinations = {}
 
@@ -22,9 +20,18 @@ app.use(express.static(__dirname + '/src'))
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'))
 
 server.listen(3000, () => {
-	routerInit()
+
 	console.log('BMD router webApp listening on port 3000')
+	console.log(`connecting to router @ ${ipaddr}`);
+
 })
+
+
+if (bmdRouter) {
+	io.emit('bmdRouter state', {
+		state: true
+	})
+}
 
 app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/index.html')
@@ -34,14 +41,7 @@ app.get('/', function (req, res) {
 io.on('connection', (socket) => {
 	connections.push(socket)
 	console.log(`server: connections = ${connections.length}`)
-	socket.emit('dest init', destinations)
-	io.emit('bmdRouter state', {
-		state: isOnline
-	})
 
-
-	console.log('source init')
-	socket.emit('source init', sources)
 
 
 	socket.on('disconnect', function (socket) {
@@ -50,8 +50,9 @@ io.on('connection', (socket) => {
 	})
 
 
-	if (isOnline) {
-		console.log('requesting io table')
+	if (isOnline === true) {
+		console.log('sending router state')
+
 	}
 
 
@@ -66,74 +67,68 @@ io.on('connection', (socket) => {
 			io.emit('server messages', 'router not connected...')
 		}
 	}))
+
+	socket.on('get sources', () => {
+		console.log('socket - get sources');
+		lastRequest = 'getInputLabels'
+		getInputLabels()
+	})
+
+	socket.on('get destinations', () => {
+		console.log('socket - get destinations');
+		lastRequest = 'getOutputLabels'	
+		getOutputLabels()
+	})
+
 })
 
 
-function routerInit() {
-	console.log('server: router init...')
-	bmdRouter = net.connect({
-		port: 9990,
-		host: ipaddr
-	}, () => {
-		console.log('connected to router...')
+bmdRouter.on('connect', () => {
+	isOnline = true
+})
+
+bmdRouter.on('data', (data) => {
+	remaining += data
+	var index = remaining.indexOf('\n')
+	while (index > -1) {
+		var line = remaining.substring(0, index)
+		remaining = remaining.substring(index + 1)
+		parseData(line)
+		index = remaining.indexOf('\n')
+	}
+	remaining = ''
+
+})
+
+
+bmdRouter.on('close', () => {
+	isOnline = false
+	console.log('router connection closed')
+	io.emit('bmdRouter state', {
+		state: false,
+		message: 'BMD router disconnected...'
 	})
+})
 
-	bmdRouter.on('connect', () => {
-		isOnline = true
-		io.emit('bmdRouter state', {
-			state: isOnline
-		})
-		setTimeout(() => {
-			getInputLabels()
-		}, 3000)
-		setTimeout(() => {
-			console.log(sources)
-		}, 8000)
 
+bmdRouter.on('end', () => {
+	isOnline = null
+	console.log('router connection ended')
+	io.emit('bmdRouter state', {
+		state: null,
+		message: 'disconnected...'
 	})
+})
 
-	bmdRouter.on('data', (data) => {
-		remaining += data
-		var index = remaining.indexOf('\n')
-		while (index > -1) {
-			var line = remaining.substring(0, index)
-			remaining = remaining.substring(index + 1)
-			parseData(line)
-			index = remaining.indexOf('\n')
-		}
-		remaining = ''
+
+bmdRouter.on('error', () => {
+	isOnline = false
+	console.log('router connection error')
+	io.emit('bmdRouter state', {
+		state: false,
+		message: 'BMD router connection error...'
 	})
-
-
-	bmdRouter.on('close', () => {
-		isOnline = false
-		console.log('router connection closed')
-		io.emit('bmdRouter state', {
-			state: false,
-			message: 'BMD router disconnected...'
-		})
-	})
-
-
-	bmdRouter.on('end', () => {
-		isOnline = null
-		console.log('router connection ended')
-		io.emit('bmdRouter state', {
-			state: null,
-			message: 'disconnected...'
-		})
-	})
-
-
-	bmdRouter.on('error', () => {
-		isOnline = false
-		console.log('router connection error')
-		io.emit('bmdRouter state', {
-			state: false,
-			message: 'BMD router connection error...'
-		})
-	})
-}
+})
 
 
 function parseData(data) {
@@ -150,7 +145,7 @@ function parseData(data) {
 	// })
 	// }
 
-	
+
 	// var thisMatchinfo = data
 	// arr = thisMatchinfo.split(' ')
 	// console.log(arr);
@@ -161,12 +156,12 @@ function parseData(data) {
 	var currentRoutes = thisMatchinfo.match(ioReg)
 
 	if (lastRequest === 'getInputLabels' && found !== null) {
-		console.log(`label: ${found[2]} input: ${found[1]}`)
+		console.log(`sources: key ${found[2]} value: ${found[1]}`)
 		sources[found[1]] = found[2]
 	}
 
 	if (lastRequest === 'getOutputLabels' && found !== null) {
-		console.log(`label: ${found[2]} output: ${found[1]}`)
+		console.log(`destinations:  key ${found[2]} value: ${found[1]}`)
 		destinations[found[1]] = found[2]
 	}
 
@@ -178,15 +173,12 @@ function parseData(data) {
 
 
 function getInputLabels() {
-	lastRequest = 'getInputLabels'
-	console.log(lastRequest)
 	bmdRouter.write(Buffer.from('INPUT LABELS:\n'))
 	bmdRouter.write(Buffer.from('\n'))
 }
 
 function getOutputLabels() {
-	lastRequest = 'getOutputLabels'
-	console.log(lastRequest)
+	
 	bmdRouter.write(Buffer.from('OUTPUT LABELS:\n'))
 	bmdRouter.write(Buffer.from('\n'))
 }

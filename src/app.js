@@ -1,9 +1,11 @@
-import sources from '../bin/objectifySources'
-import destinations from '../bin/objectifyDestinations'
+
 import $ from 'jquery'
 import io from 'socket.io-client'
-var socket = io.connect()
 
+
+var socket = io.connect()
+var sources
+var destinations
 
 var routerState = document.getElementById('routerState')
 var appMessages = document.getElementById('appMessages')
@@ -24,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	appMessages.innerText = 'page fully loaded'
 	appMessages.style.color = 'green'
-	generate_table()
+	
 
 
 	// sockets
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		$('td > select').text('')
 		document.getElementById('headerText').style.color = 'green'
 		socket.emit('get destinations')
-		socket.emit('get sources')
+		
 	})
 
 
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 	socket.on('bmdRouter state', (msg) => {
-		if (msg === true) {
+		if (msg.state === true) {
 			routerState.innerText = 'Router online'
 			routerState.style.color = 'green'
 		} else {
@@ -54,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 
 	socket.on('source init', (msg) => {
-		console.log(msg)
+		sources = msg
+		console.log('source init socket');
 		for (var key in sources) {
 			if (sources.hasOwnProperty(key)) {
 				for (var i = 0; i < sourceArr.length; i++) {
@@ -66,6 +69,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 		initSelectors()
 	})
+
+	socket.on('dest init', (msg) => {
+		console.log('dest init socket');
+		destinations = msg
+		generate_table()
+		socket.emit('get sources')
+	})
+
 
 	socket.on('server messages', (msg) => {
 		document.getElementById('appMessages').innerText = msg
@@ -94,7 +105,7 @@ function initSelectors() {
 }
 
 function generate_table() {
-	var body = document.getElementById('routerTable') 
+	var body = document.getElementById('routerTable')
 	var tbl = document.getElementById('routerBody')
 	for (var key in sources) {
 		const row = document.createElement('tr')
@@ -115,6 +126,6 @@ function generate_table() {
 		tbl.appendChild(row)
 	}
 	body.appendChild(tbl)
-	
+
 }
 
