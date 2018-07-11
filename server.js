@@ -6,7 +6,7 @@ const io = require('socket.io')(server)
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
-var bmdRouter = require('./testStuff')
+var bmdRouter = require('./bmdRouter')
 var connections = []
 var remaining
 var isOnline = undefined
@@ -25,6 +25,10 @@ server.listen(3000, () => {
 	console.log(`connecting to router @ ${ipaddr}`);
 
 })
+
+module.exports.io = io
+
+
 
 
 if (bmdRouter) {
@@ -156,12 +160,12 @@ function parseData(data) {
 	var currentRoutes = thisMatchinfo.match(ioReg)
 
 	if (lastRequest === 'getInputLabels' && found !== null) {
-		console.log(`sources: key ${found[2]} value: ${found[1]}`)
+		// console.log(`sources: key ${found[2]} value: ${found[1]}`)
 		sources[found[1]] = found[2]
 	}
 
 	if (lastRequest === 'getOutputLabels' && found !== null) {
-		console.log(`destinations:  key ${found[2]} value: ${found[1]}`)
+		// console.log(`destinations:  key ${found[2]} value: ${found[1]}`)
 		destinations[found[1]] = found[2]
 	}
 
