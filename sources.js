@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 const bmdRouter = require('./bmdRouter')
 
 module.exports = (io) => {
@@ -17,6 +15,3 @@ module.exports = (io) => {
 
 	})
 }
-
-
->>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0

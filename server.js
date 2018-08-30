@@ -6,25 +6,14 @@ const io = require('socket.io')(server)
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
-<<<<<<< HEAD
-var bmdRouter = require('./bmdRouter')
-var sources = require('./sources')
-var destinations = require('./destinations')
-=======
 module.exports.ipaddr = ipaddr
 const bmdRouter = require('./bmdRouter')
 const sources = require('./sources')(io)
 const destinations = require('./destinations')(io)
->>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 var connections = []
 var remaining
 var isOnline = undefined
 var lastRequest = 'getOutputLabels'
-<<<<<<< HEAD
-var destinations = {}
-=======
-
->>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 
 app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
@@ -36,14 +25,6 @@ server.listen(3000, () => {
 	console.log(`connecting to router @ ${ipaddr}`);
 })
 
-<<<<<<< HEAD
-module.exports.io = io()
-
-
-
-
-=======
->>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 if (bmdRouter) {
 	io.emit('bmdRouter state', {
 		state: true
