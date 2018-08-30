@@ -6,14 +6,25 @@ const io = require('socket.io')(server)
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
+<<<<<<< HEAD
 var bmdRouter = require('./bmdRouter')
 var sources = require('./sources')
 var destinations = require('./destinations')
+=======
+module.exports.ipaddr = ipaddr
+const bmdRouter = require('./bmdRouter')
+const sources = require('./sources')(io)
+const destinations = require('./destinations')(io)
+>>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 var connections = []
 var remaining
 var isOnline = undefined
 var lastRequest = 'getOutputLabels'
+<<<<<<< HEAD
 var destinations = {}
+=======
+
+>>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 
 app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
@@ -21,17 +32,18 @@ app.use(express.static(__dirname + '/src'))
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist'))
 
 server.listen(3000, () => {
-
 	console.log('BMD router webApp listening on port 3000')
 	console.log(`connecting to router @ ${ipaddr}`);
-
 })
 
+<<<<<<< HEAD
 module.exports.io = io()
 
 
 
 
+=======
+>>>>>>> cad93cf183358ef84fd12b1c04e0f978b8e6e0e0
 if (bmdRouter) {
 	io.emit('bmdRouter state', {
 		state: true
@@ -73,15 +85,11 @@ io.on('connection', (socket) => {
 		}
 	}))
 
-	socket.on('get sources', () => {
-		console.log('socket - get sources');
-		lastRequest = 'getInputLabels'
-		getInputLabels()
-	})
+	
 
 	socket.on('get destinations', () => {
 		console.log('socket - get destinations');
-		lastRequest = 'getOutputLabels'	
+		lastRequest = 'getOutputLabels'
 		getOutputLabels()
 	})
 
@@ -93,6 +101,7 @@ bmdRouter.on('connect', () => {
 })
 
 bmdRouter.on('data', (data) => {
+	console.log(data.toString());
 	remaining += data
 	var index = remaining.indexOf('\n')
 	while (index > -1) {
@@ -140,15 +149,15 @@ function parseData(data) {
 	var arr = []
 	var labelReg = /(^[0-9]{1,2})\s(.{3,})/
 	var ioReg = /(^[0-9]{1,2})\s([0-9]{1,2})/
-	// if (ioReg.test(routerText.write(data))) {
-	// 	var thisMatchinfo = data
-	// 	arr = thisMatchinfo.split(' ')
-	// 	console.log(arr);
-	// io.emit('router change', {
-	// 	source: arr[1],
-	// 	destination: arr[0]
-	// })
-	// }
+	if (ioReg.test(routerText.write(data))) {
+		var thisMatchinfo = data
+		arr = thisMatchinfo.split(' ')
+		console.log(arr);
+		io.emit('router change', {
+			source: arr[1],
+			destination: arr[0]
+		})
+	}
 
 
 	// var thisMatchinfo = data
@@ -162,12 +171,12 @@ function parseData(data) {
 
 	if (lastRequest === 'getInputLabels' && found !== null) {
 		// console.log(`sources: key ${found[2]} value: ${found[1]}`)
-		sources[found[1]] = found[2]
+		// sources[found[1]] = found[2]
 	}
 
 	if (lastRequest === 'getOutputLabels' && found !== null) {
 		// console.log(`destinations:  key ${found[2]} value: ${found[1]}`)
-		destinations[found[1]] = found[2]
+		// destinations[found[1]] = found[2]
 	}
 
 	if (lastRequest === 'ioTable' && currentRoutes !== null) {
@@ -178,12 +187,11 @@ function parseData(data) {
 
 
 function getInputLabels() {
-	bmdRouter.write(Buffer.from('INPUT LABELS:\n'))
-	bmdRouter.write(Buffer.from('\n'))
+	
 }
 
 function getOutputLabels() {
-	
+
 	bmdRouter.write(Buffer.from('OUTPUT LABELS:\n'))
 	bmdRouter.write(Buffer.from('\n'))
 }
