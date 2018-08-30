@@ -7,11 +7,12 @@ const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
 const ipaddr = process.argv[2] || '10.0.99.50'
 var bmdRouter = require('./bmdRouter')
+var sources = require('./sources')
+var destinations = require('./destinations')
 var connections = []
 var remaining
 var isOnline = undefined
 var lastRequest = 'getOutputLabels'
-var sources = {}
 var destinations = {}
 
 app.use(express.static(__dirname + '/'))
@@ -26,7 +27,7 @@ server.listen(3000, () => {
 
 })
 
-module.exports.io = io
+module.exports.io = io()
 
 
 
