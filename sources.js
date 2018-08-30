@@ -1,9 +1,19 @@
-const io = require('./server')
-var isGood
+const bmdRouter = require('./bmdRouter')
 
-io.on('connection', (socket) => {
-  isGood = true
-})
+module.exports = (io) => {
+	io.on('connection', (socket) => {
+		console.log('sources socket io working...')
 
-module.exports.isGood = isGood
+		socket.emit('server messages', 'sources.js running')
+
+		socket.on('get sources', () => {
+			console.log('socket - get sources');
+			lastRequest = 'getInputLabels'
+			bmdRouter.write(Buffer.from('INPUT LABELS:\n'))
+			bmdRouter.write(Buffer.from('\n'))
+		})
+
+	})
+}
+
 

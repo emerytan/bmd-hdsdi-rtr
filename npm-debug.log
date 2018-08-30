@@ -10,7 +10,7 @@
 6 silly lifecycle gc-rtr@1.0.0~prestart: no script for prestart, continuing
 7 info lifecycle gc-rtr@1.0.0~start: gc-rtr@1.0.0
 8 verbose lifecycle gc-rtr@1.0.0~start: unsafe-perm in lifecycle true
-9 verbose lifecycle gc-rtr@1.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/macpro2/nodeApps/bmd-hdsdi-rtr/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin
+9 verbose lifecycle gc-rtr@1.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/macpro2/nodeApps/bmd-hdsdi-rtr/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin
 10 verbose lifecycle gc-rtr@1.0.0~start: CWD: /Users/macpro2/nodeApps/bmd-hdsdi-rtr
 11 silly lifecycle gc-rtr@1.0.0~start: Args: [ '-c', 'node server.js "192.168.64.219"' ]
 12 silly lifecycle gc-rtr@1.0.0~start: Returned: code: 1  signal: null
