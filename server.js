@@ -20,17 +20,11 @@ app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
 
 
-server.listen(3000, () => {
-	console.log('BMD router webApp listening on port 3000')
-	console.log(`connecting to router @ ${ipaddr}`);
-})
-
-
 const bmdRouter = net.createConnection({
 	port: 9990,
 	host: ipaddr
 }, () => {
-	console.log('connected to router...')
+	console.log(`connecting to router at: ${ipaddr}`)
 })
 
 bmdRouter.on('connect', () => {
@@ -39,7 +33,17 @@ bmdRouter.on('connect', () => {
 
 bmdRouter.on('data', (data) => {
 
-	console.log(routerText.write(data));
+	if (data.length < 30 && data.toString() != 'ACK') {
+		var rtrChange = data.slice(data.indexOf(0x0a),)
+		var parsed = /([0-9]{1,2})\s([0-9]{1,2})/.exec(rtrChange.toString())
+		if (parsed !== null) {
+			io.emit('io change', {
+				dest: parseInt(parsed[1]),
+				src: parseInt(parsed[2])
+			})
+			console.log(`io change: destination ${parsed[1]} -- source ${parsed[2]} `);
+		}
+	}
 
 	chunk += data.toString()
 	var index = chunk.indexOf('\n')
@@ -50,6 +54,7 @@ bmdRouter.on('data', (data) => {
 		index = chunk.indexOf('\n')
 	}
 	chunk = ''
+
 })
 
 
@@ -83,17 +88,8 @@ bmdRouter.on('error', () => {
 })
 
 
-function parseData(z) {
-	var ioarr = ioRegex.exec(z)
-	var labelArr = labelRegex.exec(z)
-	if (getData === "io" && ioarr !== null) ioTable[ioarr[1]] = ioarr[2]
-	if (getData === "input" && labelArr !== null) inputLabels[labelArr[1]] = labelArr[2]
-	if (getData === "output" && labelArr !== null) outputLabels[labelArr[1]] = labelArr[2]
-}
-
-
 setTimeout(() => {
-	console.log(ioTable)
+	console.log('connected - got ioTable')
 	getInputLabels()
 }, 2000)
 
@@ -104,7 +100,74 @@ setTimeout(() => {
 
 setTimeout(() => {
 	console.log('output labels')
+	startWebServer()
 }, 4000)
+
+
+app.get('/', function (req, res) {
+	res.sendfile(__dirname + '/index.html')
+})
+
+
+io.on('connection', (socket) => {
+	connections.push(socket)
+	console.log(`server: connections = ${connections.length}`)
+
+	getIO()
+
+	socket.on('disconnect', function (socket) {
+		connections.splice(connections.indexOf(socket), 1)
+		console.log(`server: number of client connections = ${connections.length}`)
+	})
+	
+	
+	if (isOnline === true) {
+		console.log('client connection: router is online')
+		
+	}
+	
+	socket.on('get sources', () => {
+		console.log('socket - get sources');
+		socket.emit('source init', {
+			inputLabels,
+			ioTable
+		})
+	})
+	
+	
+	socket.on('get destinations', () => {
+		console.log('socket - get destinations')
+		socket.emit('dest init', outputLabels)
+	})
+
+
+	socket.on('get io', () => {
+		console.log('socket - get io')
+		socket.emit('io init', ioTable)
+	})
+
+	socket.on('change request', (msg => {
+		console.log('write this data to bmdRouter...')
+		console.log(msg)
+		if (bmdRouter) {
+			bmdRouter.write(Buffer.from('VIDEO OUTPUT ROUTING:\n'))
+			bmdRouter.write(Buffer.from(`${msg.dest} ${msg.source}`))
+			bmdRouter.write(Buffer.from('\n\n'))
+		} else {
+			io.emit('server messages', 'router not connected...')
+		}
+	}))
+	
+})
+
+
+function parseData(z) {
+	var ioarr = ioRegex.exec(z)
+	var labelArr = labelRegex.exec(z)
+	if (getData === "io" && ioarr !== null) ioTable[ioarr[1]] = ioarr[2]
+	if (getData === "input" && labelArr !== null) inputLabels[labelArr[1]] = labelArr[2]
+	if (getData === "output" && labelArr !== null) outputLabels[labelArr[1]] = labelArr[2]
+}
 
 
 function getInputLabels() {
@@ -119,54 +182,14 @@ function getOutputLabels() {
 	bmdRouter.write(Buffer.from('\n'))
 }
 
+function getIO() {
+	getData = "io"
+	bmdRouter.write(Buffer.from('VIDEO OUTPUT ROUTING:\n'))
+	bmdRouter.write(Buffer.from('\n'))
+}
 
-
-app.get('/', function (req, res) {
-	res.sendfile(__dirname + '/index.html')
-})
-
-
-io.on('connection', (socket) => {
-	connections.push(socket)
-	console.log(`server: connections = ${connections.length}`)
-
-
-	socket.on('disconnect', function (socket) {
-		connections.splice(connections.indexOf(socket), 1)
-		console.log(`server: connections = ${connections.length}`)
-	})
-	
-	
-	if (isOnline === true) {
-		console.log('sending router state')
-		
-	}
-	
-	socket.on('get sources', () => {
-		console.log('socket - get sources');
-		socket.emit('source init', {
-			inputLabels,
-			ioTable
-		})
-	})
-	
-	socket.on('change request', (msg => {
-		console.log('write this data to bmdRouter...')
-		console.log(msg)
-		if (bmdRouter) {
-			bmdRouter.write(Buffer.from('VIDEO OUTPUT ROUTING:\n'))
-			bmdRouter.write(Buffer.from(`${msg.dest} ${msg.source}`))
-			bmdRouter.write(Buffer.from('\n\n'))
-		} else {
-			io.emit('server messages', 'router not connected...')
-		}
-	}))
-	
-	
-	socket.on('get destinations', () => {
-		console.log('socket - get destinations');
-		socket.emit('dest init', outputLabels)
-	})
-
-})
-
+function startWebServer() {
+	server.listen(3000, () => {
+		console.log('BMD router webApp listening on port 3000')
+	})	
+}

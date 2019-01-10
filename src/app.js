@@ -1,28 +1,23 @@
-
 import $ from 'jquery'
 import io from 'socket.io-client'
-
-
 var socket = io.connect()
+
+
 var sources
 var destinations
 var ioTable
-
+var sourceArr = []
 var routerState = document.getElementById('routerState')
 var appMessages = document.getElementById('appMessages')
 var routerContainer = document.getElementById('routerContainer')
 var th = document.getElementById('thead1')
 var routerBody = document.getElementById('routerBody')
-var sourceArr = []
-
-
 
 
 document.addEventListener('DOMContentLoaded', function () {
 
 	window.addEventListener('load', setTableSize, false)
 	window.addEventListener('resize', setTableSize, false)
-
 	appMessages.innerText = 'page fully loaded'
 	appMessages.style.color = 'green'
 
@@ -51,18 +46,32 @@ document.addEventListener('DOMContentLoaded', function () {
 			$('#routerContainer').fadeTo(1000, .25)
 		}
 	})
+
+
+	socket.on('dest init', (msg) => {
+		appMessages.innerText = 'dest init socket'
+		destinations = msg
+		socket.emit('get sources')
+	})
 	
+
 	socket.on('source init', (msg) => {
 		sources = msg.inputLabels
 		ioTable = msg.ioTable
-		console.log('source init socket');
+		appMessages.innerText = 'source init socket'
+		socket.emit('get io')
+	})
+
+
+	socket.on('io init', (msg) => {
+		appMessages.innerText = 'io init socket'
+		ioTable = msg
 		generate_table()
 	})
-	
-	socket.on('dest init', (msg) => {
-		console.log('dest init socket');
-		destinations = msg
-		socket.emit('get sources')
+
+	socket.on('io change', (msg) => {
+		let el = document.getElementById(`dropDownDest${msg.dest}`)
+		el.value = msg.src
 	})
 	
 
@@ -72,25 +81,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 
+
 function setTableSize() {
 	let tableBodyHeight = routerContainer.offsetHeight - th.offsetHeight - 2
 	routerBody.style.height = `${tableBodyHeight}px`
 }
 
 
-
 function initSelectors() {
 	const selectors = document.querySelectorAll('select')
 	selectors.forEach((element) => {
 		element.addEventListener('change', (event) => {
-			// Send the text content of the clicked element for processing
 			socket.emit('change request', {
 				dest: parseInt(event.target.dataset.input),
-				source: parseInt(event.target.selectedIndex - 1)
+				source: parseInt(event.target.value)
 			})
 		})
 	})
 }
+
 
 function generate_table() {
 	console.log('generate table');
@@ -146,4 +155,3 @@ function initCurrentState() {
 	}
 	initSelectors()
 }
-
