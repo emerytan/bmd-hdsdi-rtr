@@ -10,7 +10,7 @@ Assuming Node.js has already been installed, clone the repo then run the followi
 
 ```
 npm install
-mpm run build
+npm run build
 ```
 
 ## how to set ip address for BMD video hub & start the server.
@@ -20,4 +20,4 @@ example...
 node server '10.0.99.50'
 ```
 
-# hope it works!
+## hope it works!
