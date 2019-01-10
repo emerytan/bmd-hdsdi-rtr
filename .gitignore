@@ -4,3 +4,6 @@ node_modules
 bundle.js
 .DS_Store
 test.js
+sources.js
+destinations.js
+bmdRouter.js
