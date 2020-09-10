@@ -32,7 +32,7 @@ node server '10.0.99.50'
 
 <br>
 
-## check the videohub web server on localhost
+## Check the videohub web server on localhost
 The videohub web server will be running on port 3000 by default.  This can be changed within `server.js`.
 
 
@@ -50,4 +50,4 @@ http://[ip address hosting node server]:3000
 ```
 
 
-## hope it works!
+## Hope it works!
