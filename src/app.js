@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 	socket.on('io init', (msg) => {
-		appMessages.innerText = 'io init socket'
+		appMessages.innerText = 'websockets online'
 		ioTable = msg
 		generate_table()
 	})
