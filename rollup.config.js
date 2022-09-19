@@ -1,26 +1,25 @@
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
-import babel from 'rollup-plugin-babel'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import babel from '@rollup/plugin-babel'
+import nodePolyfills from 'rollup-plugin-polyfill-node'
 
 export default {
 	input: './src/app.js',
 	output: {
 		file: './build/bundle.js',
-		format: 'iife'
+		format: 'iife',
 	},
 	plugins: [
-		babel({
-			exclude: 'node_modules/**'
-		}),
-		resolve({
+		nodeResolve({
 			jsnext: true,
 			main: true,
 			browser: true
 		}),
-		commonjs({
-			namedExports: {
-				'node_modules/bootstrap/dist/js/bootstrap.min.js': ['bootstrap']
-			}
-		})
+		commonjs(),
+		babel({ 
+			babelHelpers: 'bundled',
+			exclude: 'node_modules/**' 
+		}),
+		nodePolyfills()
 	]
 }

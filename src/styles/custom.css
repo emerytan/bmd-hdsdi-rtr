@@ -35,6 +35,11 @@ body {
     border-radius: 10px
 }
 
+
+.table {
+    color: rgb(156, 156, 156)
+}
+
 .table-scroll tbody {
     position: absolute;
     overflow-y: scroll;
