@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		$('#ioState').text('Web server online').css('color', 'green')
 		$('td > select').text('')
 		document.getElementById('headerText').style.color = 'green'
+		document.getElementById('headerText').style.textAlign = 'center'
 		socket.emit('get destinations')
 	})
 	
@@ -153,5 +154,6 @@ function initCurrentState() {
 			element.value = ioTable[key]
 		}
 	}
+	document.getElementById('appMessages').innerText = 'router state initialized'
 	initSelectors()
 }

@@ -1,7 +1,7 @@
 {
   "name": "bmd-hdsdi-rtr",
   "version": "1.0.0",
-  "description": "Blackmagic Router controller",
+  "description": "Blackmagic Videohub SDI router controller",
   "main": "server.js",
   "bin": {
     "gc-rtr": "bmdRouter.js"

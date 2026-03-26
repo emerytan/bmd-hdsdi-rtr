@@ -20,24 +20,36 @@ body {
     background-color: rgb(32, 32, 32)
 }
 
+.h1 {
+    color: rgb(156, 156, 156);
+    background-color: rgb(32, 32, 32);
+    border: 1px solid #808080;
+    border-radius: 6px;
+    text-align: center
+}
+
 #mainContainer {
     position: relative;
     height: 100%;
+    background-color: rgb(32, 32, 32)
 }
 
 #sideCont {
     border: 1px solid #808080;
     border-radius: 10px;
 }
-
+ 
 #routerContainer {
     border: 1px solid #808080;
     border-radius: 10px
-}
+} 
 
 
 .table {
-    color: rgb(156, 156, 156)
+    color: rgb(156, 156, 156);
+    background-color: rgb(32, 32, 32);
+    border: 1px solid #808080;
+    border-radius: 6px
 }
 
 .table-scroll tbody {
@@ -67,9 +79,9 @@ p {
     margin-bottom: 0
 }
 
-h1 {
-    padding: 5px 0
-} 
+ h1 {
+    padding: 15px 0
+}  
 
 #footerContainer {
     position: relative;
