@@ -5,7 +5,7 @@ const net = require('net')
 const io = require('socket.io')(server)
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
-const ipaddr = process.argv[2] || '10.208.79.51'
+const ipaddr = process.argv[2] || '10.244.3.110'
 var connections = []
 var isOnline = undefined
 var ioTable = {}
@@ -32,7 +32,7 @@ bmdRouter.on('connect', () => {
 })
 
 bmdRouter.on('data', (data) => {
-
+	console.log(data.toString())
 	if (data.length < 30 && data.toString() != 'ACK') {
 		var rtrChange = data.slice(data.indexOf(0x0a),)
 		var parsed = /([0-9]{1,2})\s([0-9]{1,2})/.exec(rtrChange.toString())
@@ -87,21 +87,29 @@ bmdRouter.on('error', () => {
 	})
 })
 
+if (isOnline === true) {
+	console.log('tcp connection made: getting data')
+	setTimeout(() => {
+		console.log('connected - got ioTable')
+		getInputLabels()
+	}, 2000)
+	
+	setTimeout(() => {
+		console.log('input labels')
+		getOutputLabels()
+	}, 3000)
+	
+	setTimeout(() => {
+		console.log('output labels')
+		startWebServer()
+	}, 4000)
 
-setTimeout(() => {
-	console.log('connected - got ioTable')
-	getInputLabels()
-}, 2000)
+} else {
+	console.log('no tcp connection made, exiting');
+	
+	process.exit()
+}
 
-setTimeout(() => {
-	console.log('input labels')
-	getOutputLabels()
-}, 3000)
-
-setTimeout(() => {
-	console.log('output labels')
-	startWebServer()
-}, 4000)
 
 
 app.get('/', function (req, res) {
