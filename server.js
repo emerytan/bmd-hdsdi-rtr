@@ -5,7 +5,7 @@ const net = require('net')
 const io = require('socket.io')(server)
 const StringDecoder = require('string_decoder').StringDecoder
 const routerText = new StringDecoder('utf8')
-const ipaddr = process.argv[2] || '10.244.3.110'
+const ipaddr = process.argv[2] || '10.208.79.51'
 var connections = []
 var isOnline = undefined
 var ioTable = {}
@@ -19,20 +19,19 @@ var getData = "io"
 app.use(express.static(__dirname + '/'))
 app.use(express.static(__dirname + '/build'))
 
+console.log(`trying tcp connection to router at: ${ipaddr}`)
 
 const bmdRouter = net.createConnection({
 	port: 9990,
 	host: ipaddr
-}, () => {
-	console.log(`connecting to router at: ${ipaddr}`)
 })
 
 bmdRouter.on('connect', () => {
 	isOnline = true
+	console.log(`connected to router at: ${ipaddr}`)
 })
 
 bmdRouter.on('data', (data) => {
-	console.log(data.toString())
 	if (data.length < 30 && data.toString() != 'ACK') {
 		var rtrChange = data.slice(data.indexOf(0x0a),)
 		var parsed = /([0-9]{1,2})\s([0-9]{1,2})/.exec(rtrChange.toString())
@@ -87,28 +86,28 @@ bmdRouter.on('error', () => {
 	})
 })
 
-if (isOnline === true) {
-	console.log('tcp connection made: getting data')
-	setTimeout(() => {
+
+setTimeout(() => {
+	if (isOnline === true) {
 		console.log('connected - got ioTable')
 		getInputLabels()
-	}, 2000)
-	
-	setTimeout(() => {
-		console.log('input labels')
-		getOutputLabels()
-	}, 3000)
-	
-	setTimeout(() => {
-		console.log('output labels')
-		startWebServer()
-	}, 4000)
+	} else {
+		console.log('not connected to router...')
+		process.exit()
+	}
+}, 2000)
 
-} else {
-	console.log('no tcp connection made, exiting');
-	
-	process.exit()
-}
+setTimeout(() => {
+	console.log('input labels')
+	getOutputLabels()
+}, 3000)
+
+setTimeout(() => {
+	console.log('output labels')
+	startWebServer()
+}, 4000)
+
+
 
 
 
@@ -127,13 +126,13 @@ io.on('connection', (socket) => {
 		connections.splice(connections.indexOf(socket), 1)
 		console.log(`server: number of client connections = ${connections.length}`)
 	})
-	
-	
+
+
 	if (isOnline === true) {
 		console.log('client connection: router is online')
-		
+
 	}
-	
+
 	socket.on('get sources', () => {
 		console.log('socket - get sources');
 		socket.emit('source init', {
@@ -141,8 +140,8 @@ io.on('connection', (socket) => {
 			ioTable
 		})
 	})
-	
-	
+
+
 	socket.on('get destinations', () => {
 		console.log('socket - get destinations')
 		socket.emit('dest init', outputLabels)
@@ -165,7 +164,7 @@ io.on('connection', (socket) => {
 			io.emit('server messages', 'router not connected...')
 		}
 	}))
-	
+
 })
 
 
@@ -199,6 +198,6 @@ function getIO() {
 function startWebServer() {
 	server.listen(3000, () => {
 		console.log('BMD router webApp listening on port 3000')
-	})	
+	})
 }
 
