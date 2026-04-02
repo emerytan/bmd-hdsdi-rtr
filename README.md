@@ -2,9 +2,7 @@
 
 Node.js web server to control and monitor Blackmagic HD-SDI Video routers. 
 
-Recently updated to Node 25.8.  Please forgive the broken table background colors.  Dependency updates made my custom css invalid and I'm barely functional with CSS. 
-
-It may not be pretty but it's functional.  No AI agents used for this project.
+Recently updated to Node 25.8.  Please forgive the broken table background colors.  Dependency updates made the custom css invalid. 
 
 
 
@@ -55,3 +53,4 @@ http://[ip address hosting node server]:3000
 
 
 ## Hope it works!
+I made some changes to stop the http server if the tcp connection to the router does not work.  I should be using async await to get all the inputs, outputs, and labels from the router but haven't had time to make this change.  I suck at programming. 
