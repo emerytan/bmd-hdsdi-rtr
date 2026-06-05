@@ -7,3 +7,5 @@ test.js
 sources.js
 destinations.js
 bmdRouter.js
+./bin/objectifyDestinations.js
+./bin/objectifySources.js

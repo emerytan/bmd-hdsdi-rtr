@@ -32,7 +32,6 @@ for example...
 node server '10.0.99.50'
 ```
 
-<br>
 
 ## Check the videohub web server on localhost
 The videohub web server will be running on port 3000 by default.  This can be changed within `server.js`.
